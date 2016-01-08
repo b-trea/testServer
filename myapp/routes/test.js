@@ -19,34 +19,20 @@ router.get('/', function(req, res, next) {
 router.get('/insert', function(req, res, next) {
 //  res.render('index', { title: 'Express' });
 
-	var item = {
-		'id' : req.body.id,
-		'value' : req.body.value
-	};
+	var id = Number(req.query.id);
+	var value = req.query.value;
 
-	var strQuery = 'insert into testTable set ?';
-	
-	var query = connection.query(strQuery,item,function(err,rows){
+	var strQuery = "insert into testTable (id, value) values (?, ?);";
+	var insertData = [id, value];
+	var query = connection.query(strQuery,insertData,function(err,rows){
         if(err){
         	console.error(err);
-        	connection.rollback(function () {
-        		console.error('rollback error');
-        	});
+        	res.json(err);
         }
 
         console.log('insert transaction log');
         
-        connection.commit(function (err) {
-        	if(err){
-        		console.error(err);
-        		connection.rollback(function () {
-        			console.error('rollback error');
-        		});
-        	}
-
-        	res.send(200, 'success');
-        });
-        
+        res.json(req.body);
     });
 });
 
