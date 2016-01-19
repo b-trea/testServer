@@ -3,11 +3,11 @@
 var mysql = require('mysql');
 // Connection 객체 생성(Connection X)
 var connection=mysql.createConnection({
-	host : '127.0.0.1',
+	host : 'myinstance.cd4gvxnzywfs.ap-northeast-1.rds.amazonaws.com',
 	port : 3306,
-	user : 'root',
-	password : 'mymariadb',
-	database : 'boardtest',
+	user : 'mymaster',
+	password : 'mymaster',
+	database : 'mymariadb',
 });
 
 //* DB connection!
