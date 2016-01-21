@@ -56,7 +56,7 @@ router.post('/unregister', function(req, res, next){
 	res.end();
 });
 
-router.get('/send', function(req, res, next){
+router.post('/send', function(req, res, next){
 	// DB get regID and send message to regID
 	console.log('[mypush] Preparing for Send Message... ');
 
@@ -64,10 +64,19 @@ router.get('/send', function(req, res, next){
 	var senderId = req.body.senderId;
 	var key1 = 'keyqwe';
 
-	var message = new gcm.Message();
-	message.addData('title', 'TestMessage');
-	message.addData('key3', 'message Key3');
-	
+	var message = new gcm.Message({
+		collapseKey: 'demo',
+		delayWhileIdle: true,
+		timeToLive: 3,
+		data: {
+			title: "Test Message GCM",
+			message: "메세지 수신 성공! " ,
+			key3 : "message key 3"
+		}
+	});
+//	message.addData('title', 'TestMessage');
+//	message.addData('key3', 'message Key3');
+	console.log("server key : " + server_access_key);	
 	var sender = new gcm.Sender(server_access_key);
 
 	var registrationIds = [];
@@ -79,11 +88,12 @@ router.get('/send', function(req, res, next){
 
 		if(err){
 			console.error("select error!");
-        	console.error(err);	        	
+	        	console.error(err);	        	
 		}else{
 			for(var i in rows){
 				var rid = rows[i].regId;
-				rid = rid.replace(/(\s*)/g,"");
+//				rid = rid.replace(/(\s*)/g,"");
+				console.log("push rid : " + rid);
 				registrationIds.push(rid);
 			}
 
@@ -95,7 +105,7 @@ router.get('/send', function(req, res, next){
 					console.error(err);
 				}else{
 					var r = result;
-					console.log('Send result : ' + r);
+					console.log('Send result : \n',  r);
 				}
 			});
 
@@ -106,6 +116,11 @@ router.get('/send', function(req, res, next){
 
 	res.end();
 });
+
+function printResult(log){
+	console.log('Send Result : \n', log);
+
+}
 
 
 module.exports = router;
