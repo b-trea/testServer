@@ -9,35 +9,27 @@ var gcm = require('node-gcm');
 var server_access_key = 'AIzaSyBjdJaYlt7iQDKqE5Vg5yrVIA2EXNKo2kI'; // API 키
 
 
-router.get('/register', function(req, res, next){
+router.post('/register', function(req, res, next){
 	// DB Update
 	console.log('[mypush] registering... ');
+	console.log('-----');
+	var regId = req.body.regId;
+	var senderId = req.body.senderId;
+	console.log('regId : ' + regId);
+	console.log('senderId : ' + senderId);
 
-	var body = '';
-
-	req.on('data', function(chunk){
-		body+=chunk;
-	});
-
-	req.on('end', function(){
-		var json = JSON.parse(body);
-		var regId = json.regId;
-		var senderId = json.senderId;
-
-		// DB data insert!
-		var strQuery = "insert into regId (regId, senderId) values (?, ?);";
-		var insertData = [regId, senderId];
-		var query = connection.query(strQuery,insertData,function(err,rows){
-	        if(err){
+	// DB data insert!
+	var strQuery = "insert into regId (regId, senderId) values (?, ?);";
+	var insertData = [regId, senderId];
+	var query = connection.query(strQuery,insertData,function(err,rows){
+		if(err){
 	        	console.error("insert error!");
 	        	console.error(err);
 	        	res.json(err);
 	        }
 
 	        console.log('insert complete!');
-	    });
 	});
-
 	res.end();
 });
 
